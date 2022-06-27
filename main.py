@@ -1,4 +1,3 @@
-import re
 import colorama
 
 colorama.init(autoreset=True)
@@ -22,12 +21,6 @@ class Color:
     RESET = colorama.Fore.RESET
     WHITE = colorama.Fore.WHITE
     YELLOW = colorama.Fore.YELLOW
-
-
-class Regex:
-    FUNCTION = re.compile(r"")
-    DICT = re.compile(r"")
-    INTEGER = re.compile(r"")
 
 
 def format_string(obj: str) -> str:
