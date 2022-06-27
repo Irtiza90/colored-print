@@ -1,15 +1,16 @@
+import re
 import colorama
-
 
 colorama.init(autoreset=True)
 
 # CONSTANTS
 ITERABLE_BRACES = {
-    list: {"start": "[", "end": "]"},
-    set: {"start": "{", "end": "}"},
-    tuple: {"start": "(", "end": ")"},
-    dict: {"start": "{", "end": "}"}
+    list: ["[", "]"],
+    set: ["{", "}"],
+    tuple: ["(", ")"],
+    dict: ["{", "}"],
 }
+
 
 class Color:
     BLACK = colorama.Fore.BLACK
@@ -21,6 +22,12 @@ class Color:
     RESET = colorama.Fore.RESET
     WHITE = colorama.Fore.WHITE
     YELLOW = colorama.Fore.YELLOW
+
+
+class Regex:
+    FUNCTION = re.compile(r"")
+    DICT = re.compile(r"")
+    INTEGER = re.compile(r"")
 
 
 def format_string(obj: str) -> str:
@@ -39,24 +46,24 @@ def format_iterable(obj: list | tuple | set) -> str:
     obj_type = type(obj)
 
     braces = ITERABLE_BRACES[obj_type]
-    formatted_iterable = f"{Color.YELLOW}{braces['start']}"
-    
+    formatted_iterable = f"{Color.YELLOW}{braces[0]}"
+
     for item in obj:
         formatted_iterable += f"\n   {format(item)}{Color.RED},"
 
-    formatted_iterable += f"\n{Color.YELLOW}{braces['end']}"
+    formatted_iterable += f"\n{Color.YELLOW}{braces[1]}"
 
     return formatted_iterable
 
 
 def format_dict(obj: dict) -> str:
-    formatted_dict = f"{Color.YELLOW}{ITERABLE_BRACES[dict]['start']}"
+    formatted_dict = f"{Color.YELLOW}{ITERABLE_BRACES[dict][0]}"
 
     for key, value in obj.items():
         formatted_dict += f"\n   {format(key)}{Color.RED}: {format(value)}{Color.RED},"
 
-    formatted_dict += f"\n{Color.YELLOW}{ITERABLE_BRACES[dict]['end']}"
-    
+    formatted_dict += f"\n{Color.YELLOW}{ITERABLE_BRACES[dict][1]}"
+
     return formatted_dict
 
 
@@ -78,6 +85,9 @@ def format(obj) -> str:
     if obj_type == bool:
         return format_boolean(obj)
 
+    if obj is None:
+        return f"{Color.MAGENTA}None"
+
     if obj_type in {int, float}:
         return format_number(obj)
 
@@ -92,7 +102,7 @@ def format(obj) -> str:
         # class Main: pass
         # type(Main) == type  returns >> True
         return format_type(obj)
-    
+
     # else
     return format_object(obj)
 
@@ -106,6 +116,7 @@ def test():
     cprint(2.2)
     cprint("2.2")
     cprint(True)
+    cprint(None)
     cprint([1, 2, "3"])
     # cprint([1, 2, "3", ["hello", 1, {"hi": 5, "25": ["Hello"]}]])
     cprint([1, 2, "3", ["hello"]])
@@ -124,22 +135,22 @@ def test():
         def __repr__(self) -> str:
             return f"Person(name={self.name}, age={self.age})"
 
-
     print(f"Input: {Person('Bob', 24)}")
     print(
         "Output: "
-        f'Person({Color.RED}name{Color.WHITE}={Color.GREEN}"Bob"{Color.WHITE}, '
-        f'{Color.RED}age{Color.WHITE}={Color.CYAN}24{Color.WHITE})', "\n\n"
+        f'Person({Color.RED}name{Color.RESET}={Color.GREEN}"Bob"{Color.RESET}, '
+        f'{Color.RED}age{Color.RESET}={Color.CYAN}24{Color.RESET})', "\n\n"
     )
 
-    print(f"Input: {Person}")
-    print(f"Output: <{Color.RED}class {Color.YELLOW}'__main__.test.<locals>.Person'{Color.RESET}>\n\n")
+    # print(f"Input: {Person}")
+    # print(f"Output: <{Color.RED}class {Color.YELLOW}'__main__.test.<locals>.Person'{Color.RESET}>\n\n")
 
     print("Input: <__main__.Main object at 0x000001EA2EC5F790>")
     print(
         "Output: "
-        f"<{Color.YELLOW}__main__.Main{Color.WHITE} object at {Color.RED}0x000001EA2EC5F790{Color.WHITE}>"
+        f"<{Color.YELLOW}__main__.Main{Color.RESET} object at {Color.RED}0x000001EA2EC5F790{Color.RESET}>"
     )
+
 
 if __name__ == "__main__":
     test()
